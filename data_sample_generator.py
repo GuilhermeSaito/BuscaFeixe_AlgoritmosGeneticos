@@ -5,7 +5,7 @@ list_valores = []
 list_pesos = []
 
 # Definindo a quantidade de dados para 1k amostras
-for i in range(1000):
+for i in range(10):
     list_id.append(i)
     list_valores.append(random.randint(0, 100))
     list_pesos.append(random.randint(1, 50))
