@@ -75,7 +75,7 @@ class Knapsack(object):
 		self.population = 0
 
 		# increase max recursion for long stack
-		iMaxStackSize = 15000
+		iMaxStackSize = 1500000
 		sys.setrecursionlimit(iMaxStackSize)
 
 	# create the initial population 
@@ -203,7 +203,7 @@ class Knapsack(object):
 weights = get_data_pesos()
 # profits = [24, 13, 23, 15, 16]
 profits = get_data_valores()
-opt     = [0, 1, 1, 1, 0]
+opt     = [1, 1, 1, 0, 0, 0, 0, 1, 1, 0]
 C = 26
 population = 10
 
