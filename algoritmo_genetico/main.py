@@ -1,31 +1,31 @@
-# import os
+import os
 
-# def get_data_ids():
-#     list_ids = []
+def get_data_ids():
+    list_ids = []
 
-#     with open(os.getcwd() + "/../ids.txt", "r") as f:
-#         for line in f:
-#             list_ids.append(int(line.strip()))
+    with open(os.getcwd() + "/../ids.txt", "r") as f:
+        for line in f:
+            list_ids.append(int(line.strip()))
 
-#     return list_ids
+    return list_ids
 
-# def get_data_valores():
-#     list_valores = []
+def get_data_valores():
+    list_valores = []
     
-#     with open(os.getcwd() + "/../valores.txt", "r") as f:
-#         for line in f:
-#             list_valores.append(int(line.strip()))
+    with open(os.getcwd() + "/../valores.txt", "r") as f:
+        for line in f:
+            list_valores.append(int(line.strip()))
 
-#     return list_valores
+    return list_valores
 
-# def get_data_pesos():
-#     list_pesos = []
+def get_data_pesos():
+    list_pesos = []
     
-#     with open(os.getcwd() + "/../pesos.txt", "r") as f:
-#         for line in f:
-#             list_pesos.append(int(line.strip()))
+    with open(os.getcwd() + "/../pesos.txt", "r") as f:
+        for line in f:
+            list_pesos.append(int(line.strip()))
 
-#     return list_pesos
+    return list_pesos
 
 # ids = get_data_ids()
 # valores = get_data_valores()
@@ -199,8 +199,10 @@ class Knapsack(object):
 			self.run()	
 
 # properties for this particular problem
-weights = [12,  7, 11, 8, 9]
-profits = [24, 13, 23, 15, 16]
+# weights = [12,  7, 11, 8, 9]
+weights = get_data_pesos()
+# profits = [24, 13, 23, 15, 16]
+profits = get_data_valores()
 opt     = [0, 1, 1, 1, 0]
 C = 26
 population = 10
