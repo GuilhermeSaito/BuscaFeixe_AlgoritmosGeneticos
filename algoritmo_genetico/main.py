@@ -1,25 +1,36 @@
 import os
-import json
 
-def get_data():
-    with open(os.getcwd() + "/../sample.txt", "r") as f:
-        data = f.read()
+def get_data_ids():
+    list_ids = []
 
-    data_list = json.loads(data)
+    with open(os.getcwd() + "/../ids.txt", "r") as f:
+        for line in f:
+            list_ids.append(int(line.strip()))
 
-    return data_list
+    return list_ids
 
+def get_data_valores():
+    list_valores = []
+    
+    with open(os.getcwd() + "/../valores.txt", "r") as f:
+        for line in f:
+            list_valores.append(int(line.strip()))
 
-teste = get_data()
+    return list_valores
 
-count = 0
-for i in teste:
-    print(i)
-    print(type(i))
+def get_data_pesos():
+    list_pesos = []
+    
+    with open(os.getcwd() + "/../pesos.txt", "r") as f:
+        for line in f:
+            list_pesos.append(int(line.strip()))
 
-    if count == 10:
-        break
+    return list_pesos
 
-    count += 1
+ids = get_data_ids()
+valores = get_data_valores()
+pesos = get_data_pesos()
 
-print(count)
+print(ids)
+print(valores)
+print(pesos)
