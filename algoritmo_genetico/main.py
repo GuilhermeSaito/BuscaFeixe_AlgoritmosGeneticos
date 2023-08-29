@@ -31,7 +31,7 @@ def get_data_pesos():
 
 weights = get_data_pesos()
 values = get_data_valores()
-knapsack_capacity = 80
+knapsack_capacity = 70
 num_items = len(weights)
 population_size = 50
 num_generations = 100
@@ -130,3 +130,8 @@ def genetic_algorithm():
 
 # Run the genetic algorithm
 genetic_algorithm()
+
+
+
+# O que daria pra fazer ainda, seria pegar o maior fitness e o individuo correspondente para printar, para q ele mostre ele e n vendo para o valor maximo q eu achei
+# Colocar a punicao do artigo tbm
