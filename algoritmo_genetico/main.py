@@ -87,6 +87,8 @@ def mutate(individual):
 def genetic_algorithm():
 	# Gera a populacao inicial
 	population = initialize_population(population_size)
+	best_fit = 0
+	best_generation = 0
 
 	# Vai rodar x geracoes especificadas por mim, caso encontre a melhor solucao, pode parar
 	for generation in range(num_generations):
@@ -99,9 +101,15 @@ def genetic_algorithm():
 		best_fitness = max(fitness_values)
 		print(f"Generation {generation+1}: Best Fitness = {best_fitness}")
 
+		if best_fitness > best_fit:
+			best_fit = best_fitness
+			best_fitness_index = fitness_values.index(max(fitness_values))
+			best_ind = population[best_fitness_index]
+			best_generation = generation
+
 		# Caso tenha encontrado algum individuo que possua o maior valor possivel (maximo global), pode parar
-		if best_fitness == 382:
-			break
+		# if best_fitness == 382:
+		# 	break
 
 		# Olhando todas as population_size, escolher uma quantidade population_size dos vetores, sendo que a probabilidade de ser escolhida eh pelo fitness_values
 		parents = random.choices(population, weights = fitness_values, k = population_size)
@@ -124,14 +132,17 @@ def genetic_algorithm():
 	# Com o index achado, eh possivel ver qual individuo produzio tal resultado e mostra ele
 	best_individual = population[best_fitness_index]
 
-	print("Best Solution:")
+	print("Best Solution da ultima iteracao:")
 	print("Chromosome:", best_individual)
 	print("Total Value:", evaluate_individual(best_individual))
+
+	print("Best Solution de todas as geracoes: ")
+	print("Chromosome: ", best_ind)
+	print("Total Value: ", best_fit)
+	print("Generation: ", best_generation)
 
 # Run the genetic algorithm
 genetic_algorithm()
 
 
-
-# O que daria pra fazer ainda, seria pegar o maior fitness e o individuo correspondente para printar, para q ele mostre ele e n vendo para o valor maximo q eu achei
 # Colocar a punicao do artigo tbm
