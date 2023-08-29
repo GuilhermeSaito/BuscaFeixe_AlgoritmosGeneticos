@@ -1,72 +1,120 @@
+import os
 import random
 import math
 
-max_capacity = 80
 
-def total_weight(peso):
+# Retorna a lista de valores
+def get_data_valores():
+    list_valores = []
+            
+    with open('valores.txt', 'r') as valores:
+        values_valores = valores.read().splitlines()
+        for line in values_valores:
+            list_valores.append(int(line.strip()))
+
+    return list_valores
+
+# Retorna a lista de pesos
+def get_data_pesos():
+    list_pesos = []
+    
+    with open('pesos.txt', 'r') as pesos:
+        values_pesos = pesos.read().splitlines()
+        for line in values_pesos:
+            list_pesos.append(int(line.strip()))
+
+    return list_pesos
+
+    return list_pesos
+
     total = 0
-    for p in peso:
-        total += p
+    for w in weight:
+        total += w
     return total
 
+# Inicializa a solução inicial aleatoria determinando quais objetos vao entrar na mochila (1) ou n vao (0)
+def initialize_solutions(beam_width):
+	list_initial_solution = []
+	for _ in range(beam_width):
+		solution = []
+		for _ in range(num_items):
+			solution.append(random.randint(0, 1))
+		list_initial_solution.append(solution)
+	return list_initial_solution
 
-def funcao_avaliacao_TemperaSimulada(solution):
-    total_value = 0
-    for i, item in enumerate(solution):
+# Função de avaliação usando tempera simulada
+def simulated_annealing_evaluation(solution):
+    total_weight = 0
+    for i in range(num_items):
         if solution[i]:
-            total_value += item
-    # total_value = sum(item[1] for i, item in enumerate(solution) if solution[i])
-    if total_weight(solution) > max_capacity:
-        return -total_value #definir qual o parâmetro de penalização
-    # print("tempera simulada")
-    return total_value
+            total_weight += weights[i]
 
-def gerando_vizinhos(solucao):
-    vizinho = list(solucao)
+        # Se o peso total dos itens ultrapassar a capacidade da mochila, terá sua solução penalizada
+        if total_weight > knapsack_capacity:
+            return 0 
+        
+        total_value = 0
+        for i in range(num_items):
+            # Verifica o valor total dos itens que estao dentro da mochila e estao respeitado o valor total
+            if solution[i]:
+                total_value += values[i]
+        return total_value
+
+#Gera os vizinhos obtidos através de pertubação da solução atual
+def generate_neighbor(solution):
+    vizinho = list(solution)
     rand_index = random.randint(0, len(vizinho)-1)
     vizinho[rand_index] = 1-vizinho[rand_index] #inverte o valor do item
-    # print("gerei vizinho")
     return vizinho
 
-def busca_feixe(largura_feixe, num_vizinhos, temperatura, iteracoes):
-
-    solucoes = [random.choices([0,1], k=10) for _ in range(largura_feixe)] #verificar o k
+def beam_width_algorithm():
     
-    for _ in range(iteracoes):
-        prox_solucao = []
-
-        for solucao in solucoes:
-            vizinhos = [gerando_vizinhos(solucao) for _ in range(num_vizinhos)]
-            vizinhos_pontos = [(vizinho, funcao_avaliacao_TemperaSimulada(vizinho)) for vizinho in vizinhos]
-            vizinhos_pontos.sort(key=lambda x: x[1], reverse=True)
-
-            prox_solucao.extend([vizinho for vizinho, _ in vizinhos_pontos[:largura_feixe]])
+    #Gera o conjunto de soluções iniciais
+    list_initial_solution = initialize_solutions(beam_width)
+    
+    # Roda x vezes, parando ao encontrar a melhor solução   
+    for _ in range(num_interations):
+        next_solutions = []
+        temperature = 10
+        # Gerar vizinhos e avaliar soluções atuais
+        for solution in list_initial_solution:
             
-            count = 0
+            neighbors = [generate_neighbor(solution) for _ in range(num_neighbors)] # Gera num_neighbors vizinhos perturbando a solução atual
+            neighbors_with_scores = [(neighbor, simulated_annealing_evaluation(neighbor)) for neighbor in neighbors] # Aplicando a função avaliativa para cada solução
+            neighbors_with_scores.sort(key=lambda x: x[1], reverse=True) # Classificando os vizinhos pela avaliação em ordem decrescente
+            
+            next_solutions.extend([neighbor for neighbor, _ in neighbors_with_scores[:beam_width]]) # Seleciona os beam_width melhores vizinhos para a próxima iteração
+            
+        # Processo de Tempera Simulada para aceitar/rejeitar soluções perturbadas
+        for i in range(len(next_solutions)):
+            old_score = simulated_annealing_evaluation(next_solutions[i])
+            perturbed_solution = generate_neighbor(next_solutions[i])
 
-            for i in range(len(prox_solucao)):
-                old_score = funcao_avaliacao_TemperaSimulada(prox_solucao[i])
-                pertubed_solution = gerando_vizinhos(prox_solucao[i])
+            new_score = simulated_annealing_evaluation(perturbed_solution)
+            if new_score > old_score or random.random() < math.exp((new_score - old_score) / temperature):
+                next_solutions[i] = perturbed_solution
+            
+        # Atualiza as soluções atuais para as próximas soluções geradas
+        current_solutions = next_solutions
 
-                new_score = funcao_avaliacao_TemperaSimulada(pertubed_solution)
-                if new_score > old_score or random.random() < math.exp((new_score-old_score)/temperatura):
-                    prox_solucao[i]=pertubed_solution
-                count+=1
-                # print(i)
-                # print(len(prox_solucao))
-                # print("cheguei aqui1")
-            solucoes = prox_solucao
-            temperatura *= 0.95
-            print("cheguei aqui2")
-        print("cheguei aqui3")
+        # Diminui a temperatura para controlar a probabilidade de aceitar soluções piores
+        temperature *= 0.95  # Fator de resfriamento
 
-    best_solution = max(solucoes, key=funcao_avaliacao_TemperaSimulada)
-    return best_solution
+    # Encontra a melhor solução entre as soluções atuais
+    best_solution = max(current_solutions, key=simulated_annealing_evaluation)
+    return best_solution      
 
+# Definir uma heurística para estes parâmetros
+weights = get_data_pesos()
+values = get_data_valores()
+knapsack_capacity = 80
+num_items = len(weights)
 beam_width = 5
-num_neighbors = 10
-temperature = 10.0
-iterations = 1
+num_neighbors = 5
+temperature = 10
+num_interations = 10
+    
+best_solution = beam_width_algorithm()
 
-best_solution = busca_feixe(beam_width, num_neighbors, temperature, iterations)
-print("Melhor solução encontrada:", best_solution)
+print(best_solution)
+    
