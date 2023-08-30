@@ -50,15 +50,28 @@ def initialize_population(size):
 
 # Verifica o valor de cada individuo (cada vetorzinho do vetorzao populacao)
 def evaluate_individual(individual):
+	# Pega o valor total de todos os pesos
+	total_all_weight = 0
+	for weight in weights:
+		total_all_weight += weight
+
 	total_weight = 0
 	for i in range(num_items):
 		# Vai contar o peso dos itens somente os itens que estao dentro da mochila (1)
 		if individual[i]:
 			total_weight += weights[i]
 
+	# Calculando a penalidade de acordo com esse paper http://repository.lppm.unila.ac.id/1079/1/jeas_0416_4013-2.pdf
+	dist = abs(total_weight - knapsack_capacity)
+	diff = min(knapsack_capacity, abs(total_all_weight - knapsack_capacity))
+	penalty = 1 - (dist / diff)
+	if penalty <= 0:
+		penalty = 0.00001
+
+
 	# Se o peso total dos itens ultrapassar a capacidade da mochila, entao tem que ser penalizado
 	if total_weight > knapsack_capacity:
-		return 0  # Penalize solutions that exceed capacity
+		return total_weight * penalty
 	
 	total_value = 0
 	for i in range(num_items):
@@ -144,5 +157,5 @@ def genetic_algorithm():
 # Run the genetic algorithm
 genetic_algorithm()
 
-
+	
 # Colocar a punicao do artigo tbm
