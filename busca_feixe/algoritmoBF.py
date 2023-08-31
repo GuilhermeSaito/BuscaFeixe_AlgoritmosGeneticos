@@ -2,31 +2,23 @@ import os
 import random
 import math
 
-
 # Retorna a lista de valores
 def get_data_valores():
-    list_valores = []
-            
+    list_valores = []         
     with open('valores.txt', 'r') as valores:
         values_valores = valores.read().splitlines()
         for line in values_valores:
             list_valores.append(int(line.strip()))
-
     return list_valores
 
 # Retorna a lista de pesos
 def get_data_pesos():
     list_pesos = []
-    
     with open('pesos.txt', 'r') as pesos:
         values_pesos = pesos.read().splitlines()
         for line in values_pesos:
             list_pesos.append(int(line.strip()))
-
     return list_pesos
-
-    return list_pesos
-
     total = 0
     for w in weight:
         total += w
@@ -68,7 +60,6 @@ def generate_neighbor(solution):
     return vizinho
 
 def beam_width_algorithm():
-    
     #Gera o conjunto de soluções iniciais
     list_initial_solution = initialize_solutions(beam_width)
     
@@ -99,7 +90,7 @@ def beam_width_algorithm():
 
         # Diminui a temperatura para controlar a probabilidade de aceitar soluções piores
         temperature *= 0.95  # Fator de resfriamento
-
+        
     # Encontra a melhor solução entre as soluções atuais
     best_solution = max(current_solutions, key=simulated_annealing_evaluation)
     return best_solution      
