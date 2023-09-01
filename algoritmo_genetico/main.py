@@ -1,5 +1,6 @@
 import os
 import random
+import matplotlib.pyplot as plt
 
 def get_data_ids():
     list_ids = []
@@ -102,6 +103,8 @@ def genetic_algorithm():
 	population = initialize_population(population_size)
 	best_fit = 0
 	best_generation = 0
+	list_best_fit = []
+	list_best_generation = []
 
 	# Vai rodar x geracoes especificadas por mim, caso encontre a melhor solucao, pode parar
 	for generation in range(num_generations):
@@ -114,11 +117,19 @@ def genetic_algorithm():
 		best_fitness = max(fitness_values)
 		print(f"Generation {generation+1}: Best Fitness = {best_fitness}")
 
+		# Para plotar no grafico, o melhor valor e de qual geracao
+		list_best_fit.append(best_fitness)
+		list_best_generation.append(generation)
+
 		if best_fitness > best_fit:
+			# Melhor valor global
 			best_fit = best_fitness
+			# Melhor individuo global
 			best_fitness_index = fitness_values.index(max(fitness_values))
 			best_ind = population[best_fitness_index]
+			# Melhor geracao global
 			best_generation = generation
+
 
 		# Caso tenha encontrado algum individuo que possua o maior valor possivel (maximo global), pode parar
 		# if best_fitness == 382:
@@ -143,19 +154,30 @@ def genetic_algorithm():
 	# Acha o index em que tem o maior valor dos itens dos individuos na populacao
 	best_fitness_index = fitness_values.index(max(fitness_values))
 	# Com o index achado, eh possivel ver qual individuo produzio tal resultado e mostra ele
-	best_individual = population[best_fitness_index]
+	# best_individual = population[best_fitness_index]
 
-	print("Best Solution da ultima iteracao:")
-	print("Chromosome:", best_individual)
-	print("Total Value:", evaluate_individual(best_individual))
+	# print("Best Solution da ultima iteracao:")
+	# print("Chromosome:", best_individual)
+	# print("Total Value:", evaluate_individual(best_individual))
 
 	print("Best Solution de todas as geracoes: ")
 	print("Chromosome: ", best_ind)
 	print("Total Value: ", best_fit)
 	print("Generation: ", best_generation)
+	
+	# Plota o grafico com as 2 listas
+	plt.scatter(list_best_generation, list_best_fit, marker='x', s=100, c='blue', label='Data Points')
+
+	# Add labels to the axes and a title to the plot
+	plt.xlabel('Generation')
+	plt.ylabel('Value')
+	plt.title('Generation vs. Value')
+
+	# Display the plot
+	plt.legend()
+	plt.grid(True)
+	plt.show()
+
 
 # Run the genetic algorithm
 genetic_algorithm()
-
-	
-# Colocar a punicao do artigo tbm
