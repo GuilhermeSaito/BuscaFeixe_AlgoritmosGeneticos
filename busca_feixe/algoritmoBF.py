@@ -1,6 +1,7 @@
 import os
 import random
 import math
+import matplotlib.pyplot as plt
 
 # Retorna a lista de valores
 def get_data_valores():
@@ -73,14 +74,19 @@ def generate_neighbor(solution):
 def beam_width_algorithm():
     #Gera o conjunto de soluções iniciais
     list_initial_solution = initialize_solutions(beam_width)
+    
     best_fit = 0
     best_solution = 0
     best_iteration = 0 
+   
+    list_best_fit = []
+    list_best_solution = []
     
     # Roda x vezes, parando ao encontrar a melhor solução   
     for a in range(num_iterations):
         next_solutions = []
         temperature = 10
+        
         # Gerar vizinhos e avaliar soluções atuais
         for solution in list_initial_solution:
             neighbors = [generate_neighbor(solution) for _ in range(num_neighbors)] # Gera num_neighbors vizinhos perturbando a solução atual
@@ -91,6 +97,13 @@ def beam_width_algorithm():
         best_neighbor = max(neighbors_with_scores)[0]
         
         next_solutions.extend([neighbor for neighbor, _ in neighbors_with_scores[:beam_width]]) # Seleciona os beam_width melhores vizinhos para a próxima iteração
+        
+        # Para plotar no grafico, o melhor valor e de qual geracao
+        list_best_fit.append(max_value)
+        list_best_solution.append(a)
+        
+        # print("Lista best fit: ", list_best_fit)
+        # print("Lista best solution: ", list_best_solution)
         
         if max_value > best_fit:
            best_fit = max_value
@@ -112,10 +125,25 @@ def beam_width_algorithm():
 
         # Diminui a temperatura para controlar a probabilidade de aceitar soluções piores
         temperature *= 0.95  # Fator de resfriamento
-        
-    print("Best fit", best_fit)
-    print("Best iteracao", best_iteration)
-    print("Best solucao", best_solution)
+       
+    print("Best Solution de todas as geracoes: ") 
+    print("Total Value: ", best_fit)
+    print("Best iteration: ", best_iteration)
+    print("Best solution: ", best_solution)
+    
+    # Plota o grafico com as 2 listas
+    plt.scatter(list_best_solution, list_best_fit, marker='x', s=100, c='blue', label='Data Points')
+
+    # Add labels to the axes and a title to the plot
+    plt.xlabel('Solution')
+    plt.ylabel('Value')
+    plt.title('Solution vs. Value')
+
+    # Display the plot
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
     
     # Encontra a melhor solução entre as soluções atuais
     best_solution = max(current_solutions, key=simulated_annealing_evaluation)
@@ -130,9 +158,9 @@ num_items = len(weights)
 beam_width = 5
 num_neighbors = 5
 temperature = 10
-num_iterations = 100
+num_iterations = 1000
     
 best_solution = beam_width_algorithm()
-
 print(best_solution)
-    
+
+
