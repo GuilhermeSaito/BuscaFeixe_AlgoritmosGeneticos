@@ -98,17 +98,14 @@ def beam_width_algorithm():
         
         next_solutions.extend([neighbor for neighbor, _ in neighbors_with_scores[:beam_width]]) # Seleciona os beam_width melhores vizinhos para a próxima iteração
         
-        # Para plotar no grafico, o melhor valor e de qual geracao
-        list_best_fit.append(max_value)
-        list_best_solution.append(a)
-        
-        # print("Lista best fit: ", list_best_fit)
-        # print("Lista best solution: ", list_best_solution)
-        
         if max_value > best_fit:
            best_fit = max_value
            best_iteration = a
-           best_solution = best_neighbor            
+           best_solution = best_neighbor  
+           
+        # Para plotar no grafico, o melhor valor e de qual geracao
+        list_best_fit.append(max_value)
+        list_best_solution.append(a)          
             
         # Processo de Tempera Simulada para aceitar/rejeitar soluções perturbadas
         for i in range(len(next_solutions)):
@@ -158,7 +155,7 @@ num_items = len(weights)
 beam_width = 5
 num_neighbors = 5
 temperature = 10
-num_iterations = 1000
+num_iterations = 100
     
 best_solution = beam_width_algorithm()
 print(best_solution)
